@@ -3,7 +3,7 @@ name: CD Deploy Community Databricks Asset Bundle
 on:
    push:
       branches: 
-        - 'dev'
+        - 'develop'
 
 jobs:
   deploy:
