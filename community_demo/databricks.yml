@@ -10,7 +10,7 @@ variables:
 # These are the permissions to apply to experiments, jobs, models, and pipelines defined # in the "resources" mapping.
 permissions:
   - level: CAN_MANAGE
-    service_principal_name: "sp-storage-accessdata"
+    service_principal_name: "fba6beb7-2b89-46dd-95a5-f30505b8ffc2"
 
 # These are the targets to use for deployments and workflow runs. One and only one of these
 # targets can be set to "default: true".
