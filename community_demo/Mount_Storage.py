@@ -1,3 +1,5 @@
+# Databricks notebook source
+
 storage_account_name = dbutils.widgets.get("storage_account_name")
 container_name = dbutils.widgets.get("container_name")
 mount_point = dbutils.widgets.get("mount_point")
