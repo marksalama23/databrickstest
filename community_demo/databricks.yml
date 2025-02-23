@@ -8,9 +8,9 @@ variables:
       description: Name of the env where you are doing a deployment
 
 # These are the permissions to apply to experiments, jobs, models, and pipelines defined # in the "resources" mapping.
-#permissions:
-  #- level: CAN_MANAGE
-    #service_principal_name: "fba6beb7-2b89-46dd-95a5-f30505b8ffc2"
+permissions:
+  - level: CAN_MANAGE
+    service_principal_name: "fba6beb7-2b89-46dd-95a5-f30505b8ffc2"
 
 # These are the targets to use for deployments and workflow runs. One and only one of these
 # targets can be set to "default: true".
@@ -23,7 +23,7 @@ targets:
     workspace:
       host: https://adb-2453982529917037.17.azuredatabricks.net/
     run_as:
-      service_principal_name: "sp-storage-accessdata"  
+      service_principal_name: "fba6beb7-2b89-46dd-95a5-f30505b8ffc2"  
   prod:
     variables:
       env: main
@@ -31,7 +31,7 @@ targets:
     workspace:
       host: https://adb-2960535845402106.6.azuredatabricks.net/
     run_as:
-      service_principal_name: "sp-storage-accessdata"
+      service_principal_name: "fba6beb7-2b89-46dd-95a5-f30505b8ffc2"
 
 # These are the default job and pipeline settings if not otherwise overridden in
 # the following "targets" top-level mapping.
