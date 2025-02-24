@@ -6,8 +6,8 @@ on:
         - closed
       branches: 
         - 'develop'
-      paths: 
-        - 'community_demo/**'
+      #paths: 
+        #- 'community_demo/**'
 
 jobs:
   deploy:
@@ -54,6 +54,59 @@ jobs:
       # Deploy the bundle to the "dev" target as defined
       # in the bundle's settings file.
       - run: databricks bundle deploy
+        working-directory: ./community_demo
+        env:
+          DATABRICKS_TOKEN: ${{ env.DATABRICKS_TOKEN }}
+          DATABRICKS_BUNDLE_ENV: dev
+
+  # Validate, deploy, and then run the bundle.
+  pipeline_update:
+    name: 'Run pipeline update'
+    runs-on: ubuntu-latest
+
+    # Run the "deploy" job first.
+    needs:
+      - deploy
+
+    steps:
+      # Check out this repo, so that this workflow can access it.
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            community_demo
+
+      # Download the Databricks CLI.
+      # See https://github.com/databricks/setup-cli
+      - uses: databricks/setup-cli@main
+
+      - name: Logining in into Azure
+        uses: Azure/login@v2
+        with:
+          creds: '{"clientId":"${{ secrets.SP_ID_DBW_CONTRIBUTOR }}","clientSecret":"${{ secrets.SP_SECRET_DBW_CONTRIBUTOR }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID_COMM_DEMO }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+          enable-AzPSSession: true
+
+      - id: adquire-token
+        name: Adquiring access token
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module -Name Az.Accounts -AllowClobber
+
+          $context = Get-AzContext
+
+          $resource = Get-AzAccessToken -ResourceUrl 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d -DefaultProfile $context
+
+          $resourceToken = $resource.Token
+          write-host "::debug::Setting 'token' variable to $resourceToken"
+          write-host "::set-output name=token::$resourceToken"
+      
+      - name: set-databricks-token
+        run: | 
+          echo "DATABRICKS_TOKEN= ${{ steps.adquire-token.outputs.token }}" >> $GITHUB_ENV
+
+      # Run the Databricks workflow named "my-job" as defined in the
+      # bundle that was just deployed.
+      - run: databricks bundle run Databricks_Storage_Demo --refresh-all
         working-directory: ./community_demo
         env:
           DATABRICKS_TOKEN: ${{ env.DATABRICKS_TOKEN }}
