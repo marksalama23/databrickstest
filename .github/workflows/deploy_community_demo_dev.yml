@@ -55,7 +55,7 @@ jobs:
 
       # Upload the token file as an artifact
       - name: Upload token as artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: databricks-token
           path: token.txt
@@ -81,7 +81,7 @@ jobs:
     steps:
       # Download the token artifact from the deploy job
       - name: Download Databricks Token
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: databricks-token
 
