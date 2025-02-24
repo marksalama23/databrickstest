@@ -15,11 +15,11 @@ configs = {
 # Check if the mount point already exists
 existing_mounts = [mount.mountPoint for mount in dbutils.fs.mounts()]
 if mount_point not in existing_mounts:
-dbutils.fs.mount(
-    source=f"abfss://{container_name}@{storage_account_name}.dfs.core.windows.net/",
-    mount_point=mount_point,
-    extra_configs=configs
-)
-print(f"Mounted {container_name} to {mount_point}")
+    dbutils.fs.mount(
+        source=f"abfss://{container_name}@{storage_account_name}.dfs.core.windows.net/",
+        mount_point=mount_point,
+        extra_configs=configs
+    )
+    print(f"Mounted {container_name} to {mount_point}")
 else:
     print(f"Mount point {mount_point} already exists. Skipping mount.")
