@@ -103,7 +103,7 @@ jobs:
       - name: set-databricks-token
         run: | 
           echo "DATABRICKS_TOKEN= ${{ steps.adquire-token.outputs.token }}" >> $GITHUB_ENV
-          
+
       # Run the Databricks workflow named "my-job" as defined in the
       # bundle that was just deployed.
       - run: databricks bundle run Databricks_Storage_Demo --refresh-all
