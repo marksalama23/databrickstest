@@ -15,8 +15,6 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
-    outputs:
-      databricks_token: ${{ steps.acquire-token.outputs.token }}
     steps:
       # Check out this repo, so that this workflow can access it.
       - uses: actions/checkout@v4
@@ -47,11 +45,20 @@ jobs:
 
           $resourceToken = $resource.Token
           echo "::set-output name=token::$resourceToken"
-          echo "token=$resourceToken" >> $GITHUB_OUTPUT
+
+          # Save the token to a file for the next job to pick up
+          echo "$resourceToken" > token.txt
       
       - name: set-databricks-token
         run: | 
           echo "DATABRICKS_TOKEN= ${{ steps.adquire-token.outputs.token }}" >> $GITHUB_ENV
+
+      # Upload the token file as an artifact
+      - name: Upload token as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: databricks-token
+          path: token.txt
 
       # Deploy the bundle to the "dev" target as defined
       # in the bundle's settings file.
@@ -72,6 +79,17 @@ jobs:
       - deploy
 
     steps:
+      # Download the token artifact from the deploy job
+      - name: Download Databricks Token
+        uses: actions/download-artifact@v2
+        with:
+          name: databricks-token
+
+      - name: Read the Databricks Token
+        run: |
+          DATABRICKS_TOKEN=$(cat token.txt)
+          echo "DATABRICKS_TOKEN=$DATABRICKS_TOKEN" >> $GITHUB_ENV
+
       # Check out this repo, so that this workflow can access it.
       - uses: actions/checkout@v4
         with:
@@ -83,12 +101,12 @@ jobs:
       - uses: databricks/setup-cli@main
 
       - name: Debug Token
-        run: echo "DATABRICKS_TOKEN=${{ needs.deploy.outputs.databricks_token }}"
+        run: echo "DATABRICKS_TOKEN=${{ env.DATABRICKS_TOKEN }}"
 
       # Run the Databricks workflow named "Databricks_Storage_Demo" as defined in the
       # bundle that was just deployed.
       - run: databricks bundle run Databricks_Storage_Demo --refresh-all
         working-directory: ./community_demo
         env:
-          DATABRICKS_TOKEN: ${{ needs.deploy.outputs.databricks_token }}
+          DATABRICKS_TOKEN: ${{ env.DATABRICKS_TOKEN }}
           DATABRICKS_BUNDLE_ENV: dev
