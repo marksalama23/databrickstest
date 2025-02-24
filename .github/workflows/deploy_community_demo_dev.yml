@@ -15,15 +15,15 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
+    outputs:
+      databricks_token: ${{ steps.acquire-token.outputs.token }}
+      
     steps:
       # Check out this repo, so that this workflow can access it.
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
             community_demo
-            
-    outputs:
-      databricks_token: ${{ steps.acquire-token.outputs.token }}
 
       # Download the Databricks CLI.
       # See https://github.com/databricks/setup-cli
