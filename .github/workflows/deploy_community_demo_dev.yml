@@ -62,6 +62,7 @@ jobs:
   # Validate, deploy, and then run the bundle.
   pipeline_update:
     name: 'Run pipeline update'
+    environment: dev
     runs-on: ubuntu-latest
 
     # Run the "deploy" job first.
