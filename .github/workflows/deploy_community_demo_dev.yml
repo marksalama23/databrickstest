@@ -15,9 +15,6 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
-    outputs:
-      databricks_token: ${{ steps.acquire-token.outputs.token }}
-
     steps:
       # Check out this repo, so that this workflow can access it.
       - uses: actions/checkout@v4
@@ -47,11 +44,14 @@ jobs:
           $resource = Get-AzAccessToken -ResourceUrl 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d -DefaultProfile $context
 
           $resourceToken = $resource.Token
-          echo "::set-output name=token::$resourceToken"
+          echo "token=$resourceToken" >> $GITHUB_OUTPUT
       
       - name: set-databricks-token
         run: | 
           echo "DATABRICKS_TOKEN= ${{ steps.adquire-token.outputs.token }}" >> $GITHUB_ENV
+
+    outputs:
+      databricks_token: ${{ steps.acquire-token.outputs.token }}
 
       # Deploy the bundle to the "dev" target as defined
       # in the bundle's settings file.
@@ -81,6 +81,9 @@ jobs:
       # Download the Databricks CLI.
       # See https://github.com/databricks/setup-cli
       - uses: databricks/setup-cli@main
+
+      - name: Debug Token
+        run: echo "DATABRICKS_TOKEN=${{ needs.deploy.outputs.databricks_token }}"
 
       # Run the Databricks workflow named "Databricks_Storage_Demo" as defined in the
       # bundle that was just deployed.
