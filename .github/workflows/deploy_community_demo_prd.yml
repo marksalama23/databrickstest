@@ -1,17 +1,17 @@
-name: CD Deploy Community Databricks Asset Bundle in Development Environment
+name: CD Deploy Community Databricks Asset Bundle in Production Environment
 
 on:
    pull_request:
       types: 
         - closed
       branches: 
-        - 'develop'
+        - 'main'
       paths: 
         - 'community_demo/**'
 
 jobs:
   deploy:
-    environment: dev
+    environment: prod
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
@@ -57,4 +57,4 @@ jobs:
         working-directory: ./community_demo
         env:
           DATABRICKS_TOKEN: ${{ env.DATABRICKS_TOKEN }}
-          DATABRICKS_BUNDLE_ENV: dev
+          DATABRICKS_BUNDLE_ENV: prod
