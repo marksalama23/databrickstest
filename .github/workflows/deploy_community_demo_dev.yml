@@ -58,3 +58,31 @@ jobs:
         env:
           DATABRICKS_TOKEN: ${{ env.DATABRICKS_TOKEN }}
           DATABRICKS_BUNDLE_ENV: dev
+
+  # Validate, deploy, and then run the bundle.
+  pipeline_update:
+    name: 'Run pipeline update'
+    runs-on: ubuntu-latest
+
+    # Run the "deploy" job first.
+    needs:
+      - deploy
+
+    steps:
+      # Check out this repo, so that this workflow can access it.
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            community_demo
+
+      # Download the Databricks CLI.
+      # See https://github.com/databricks/setup-cli
+      - uses: databricks/setup-cli@main
+
+      # Run the Databricks workflow named "my-job" as defined in the
+      # bundle that was just deployed.
+      - run: databricks bundle run Databricks_Storage_Demo --refresh-all
+        working-directory: ./community_demo
+        env:
+          DATABRICKS_TOKEN: ${{ env.DATABRICKS_TOKEN }}
+          DATABRICKS_BUNDLE_ENV: dev
