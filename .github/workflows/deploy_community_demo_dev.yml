@@ -15,6 +15,9 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
+    outputs:
+      databricks_token: ${{ steps.acquire-token.outputs.token }}
+
     steps:
       # Check out this repo, so that this workflow can access it.
       - uses: actions/checkout@v4
@@ -84,5 +87,5 @@ jobs:
       - run: databricks bundle run Databricks_Storage_Demo --refresh-all
         working-directory: ./community_demo
         env:
-          DATABRICKS_TOKEN: ${{ needs.deploy.outputs.token }}
+          DATABRICKS_TOKEN: ${{ needs.deploy.outputs.databricks_token }}
           DATABRICKS_BUNDLE_ENV: dev
