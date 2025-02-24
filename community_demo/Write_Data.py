@@ -1,3 +1,4 @@
+
 # Databricks notebook source
 
 from pyspark.sql import SparkSession
@@ -9,7 +10,7 @@ mount_point = dbutils.widgets.get("mount_point")
 file_name = dbutils.widgets.get("file_name")
 
 # Sample data to add
-data = [("Mark", 25), ("Sameh", 30), ("Norhan", 35)]
+data = [("Mark", 25), ("Sameh", 30), ("Norhan", 35), ("Ahmed", 25)]
 columns = ["Name", "Age"]
 df = spark.createDataFrame(data, columns)
 
@@ -31,4 +32,3 @@ if dbutils.fs.ls(file_path):
 df.write.csv(file_path, header=True, mode="append")
 
 print(f"File written/updated at: {file_path}")
-
