@@ -21,6 +21,9 @@ jobs:
         with:
           sparse-checkout: |
             community_demo
+            
+    outputs:
+      databricks_token: ${{ steps.acquire-token.outputs.token }}
 
       # Download the Databricks CLI.
       # See https://github.com/databricks/setup-cli
@@ -49,9 +52,6 @@ jobs:
       - name: set-databricks-token
         run: | 
           echo "DATABRICKS_TOKEN= ${{ steps.adquire-token.outputs.token }}" >> $GITHUB_ENV
-
-    outputs:
-      databricks_token: ${{ steps.acquire-token.outputs.token }}
 
       # Deploy the bundle to the "dev" target as defined
       # in the bundle's settings file.
