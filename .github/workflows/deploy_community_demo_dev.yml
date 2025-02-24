@@ -100,9 +100,6 @@ jobs:
       # See https://github.com/databricks/setup-cli
       - uses: databricks/setup-cli@main
 
-      - name: Debug Token
-        run: echo "DATABRICKS_TOKEN=${{ env.DATABRICKS_TOKEN }}"
-
       # Run the Databricks workflow named "Databricks_Storage_Demo" as defined in the
       # bundle that was just deployed.
       - run: databricks bundle run Databricks_Storage_Demo --refresh-all
