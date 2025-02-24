@@ -17,7 +17,7 @@ jobs:
 
     outputs:
       databricks_token: ${{ steps.acquire-token.outputs.token }}
-      
+
     steps:
       # Check out this repo, so that this workflow can access it.
       - uses: actions/checkout@v4
@@ -47,6 +47,7 @@ jobs:
           $resource = Get-AzAccessToken -ResourceUrl 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d -DefaultProfile $context
 
           $resourceToken = $resource.Token
+          echo "::set-output name=token::$resourceToken"
           echo "token=$resourceToken" >> $GITHUB_OUTPUT
       
       - name: set-databricks-token
