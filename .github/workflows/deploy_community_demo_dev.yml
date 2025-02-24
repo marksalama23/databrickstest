@@ -9,6 +9,7 @@ on:
       #paths: 
         #- 'community_demo/**'
 
+#test
 jobs:
   deploy:
     environment: dev
@@ -21,7 +22,7 @@ jobs:
         with:
           sparse-checkout: |
             community_demo
-            
+
     outputs:
       databricks_token: ${{ steps.acquire-token.outputs.token }}
 
