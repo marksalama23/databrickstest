@@ -6,8 +6,8 @@ on:
         - closed
       branches: 
         - 'main'
-      #paths: 
-        #- 'community_demo/**'
+      paths: 
+        - 'community_demo/**'
 
 jobs:
   deploy:
