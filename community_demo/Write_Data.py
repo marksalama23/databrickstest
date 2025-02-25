@@ -1,33 +1,29 @@
 # Databricks notebook source
 
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import current_timestamp
+from pyspark.sql.functions import col, expr, current_timestamp
+import random
 
 spark = SparkSession.builder.getOrCreate()
 
 mount_point = dbutils.widgets.get("mount_point")
 file_name = dbutils.widgets.get("file_name")
 
-# Sample data to add
-data = [("Sameh", 25), ("Mark", 30), ("Norhan", 35)]
+# Generate random data
+random_names = ["Alice", "Bob", "Charlie"]
+random_data = [(name, random.randint(20, 50)) for name in random_names]  # generate random records
 columns = ["Name", "Age"]
-df = spark.createDataFrame(data, columns)
+df = spark.createDataFrame(random_data, columns)
 
-# Add a timestamp to the new records
+# Add a timestamp column
 df = df.withColumn("Timestamp", current_timestamp())
 
 file_path = f"{mount_point}/{file_name}"
 
-# Read existing data if it exists
-if dbutils.fs.ls(file_path):
-    existing_df = spark.read.csv(file_path, header=True, inferSchema=True)
-    
-    # Optionally filter out records that already exist (based on unique columns like Name, Age)
-    # In this case, assuming "Name" and "Age" are unique and Timestamp is for new data
-    existing_names = [row["Name"] for row in existing_df.select("Name").distinct().collect()]
-    df = df.filter(~df.Name.isin(existing_names))
+# Remove NULL timestamps before writing
+df = df.filter(col("Timestamp").isNotNull())
 
-# Write the new, non-duplicate data
-df.write.csv(file_path, header=True, mode="append")
+# Overwrite the file with new random records
+df.write.csv(file_path, header=True, mode="overwrite")
 
-print(f"File written/updated at: {file_path}")
+print(f"File overwritten at: {file_path}")
