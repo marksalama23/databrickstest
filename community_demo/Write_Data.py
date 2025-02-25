@@ -11,7 +11,7 @@ file_name = dbutils.widgets.get("file_name")
 
 # Generate random data
 random_names = ["Alice", "Bob", "Charlie"]
-random_data = [(random.choice(random_names), random.randint(20, 50)) for _ in range(5)]  # 5 random records
+random_data = [(name, random.randint(20, 50)) for name in random_names]  # generate random records
 columns = ["Name", "Age"]
 df = spark.createDataFrame(random_data, columns)
 
