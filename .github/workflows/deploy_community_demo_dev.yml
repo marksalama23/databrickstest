@@ -6,8 +6,8 @@ on:
         - closed
       branches: 
         - 'develop'
-      #paths: 
-        #- 'community_demo/**'
+      paths: 
+        - 'community_demo/**'
 
 jobs:
   deploy:
@@ -85,7 +85,7 @@ jobs:
         with:
           name: databricks-token
 
-      - name: Read the Databricks Token
+      - name: Fetch Databricks Token
         run: |
           DATABRICKS_TOKEN=$(cat token.txt)
           echo "DATABRICKS_TOKEN=$DATABRICKS_TOKEN" >> $GITHUB_ENV

@@ -9,7 +9,7 @@ mount_point = dbutils.widgets.get("mount_point")
 file_name = dbutils.widgets.get("file_name")
 
 # Sample data to add
-data = [("Mohamed", 25), ("Omar", 30), ("Essam", 35), ("Ahmed", 25)]
+data = [("Sameh", 25), ("Mark", 30), ("Norhan", 35)]
 columns = ["Name", "Age"]
 df = spark.createDataFrame(data, columns)
 
